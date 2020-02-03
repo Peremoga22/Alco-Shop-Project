@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication1.Data;
 using WebApplication1.Data.Interfacies;
+using WebApplication1.Data.Repositories;
 using WebApplication1.Data.Repositories.Mocks;
 
 namespace WebApplication1
@@ -26,8 +29,11 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient<ICategoryRepository, MockCategoryRepository>();
-            services.AddTransient<IDrinkRepository, MockDrinkRepository>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration["Data:AlcoholStore:ConnectionString"]));
+            //services.AddTransient<ICategoryRepository, MockCategoryRepository>();
+            //services.AddTransient<IDrinkRepository, MockDrinkRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IDrinkRepository, DrinkRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
